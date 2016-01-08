@@ -21,6 +21,7 @@
  */
 
 #include <SDL_version.h>
+#include <boost/scoped_ptr.hpp>
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 
@@ -34,6 +35,8 @@
 
 struct surface;
 struct SDL_Renderer;
+
+class display_renderer;
 
 namespace sdl
 {
@@ -163,19 +166,15 @@ public:
 	 */
 	operator SDL_Window*();
 
+	display_renderer &get_renderer() { return *renderer_; }
 
 private:
-	/**
-	 * Conversion operator to a SDL_Renderer*.
-	 *
-	 * @todo Evaluate whether the function should become public or not.
-	 */
-	operator SDL_Renderer*();
 
 	/***** ***** ***** Members. ***** ***** *****/
 
 	/** The @ref SDL_Window we own. */
 	SDL_Window* window_;
+	boost::scoped_ptr<display_renderer> renderer_;
 
 	/** The preferred pixel format for the renderer. */
 	Uint32 pixel_format_;

@@ -155,6 +155,7 @@ public:
 	void flip();
 
 	surface& getSurface();
+	display_renderer &get_renderer();
 
 	bool isFullScreen() const;
 

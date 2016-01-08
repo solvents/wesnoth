@@ -928,6 +928,11 @@ surface& CVideo::getSurface()
 	return frameBuffer;
 }
 
+display_renderer &CVideo::get_renderer()
+{
+	return window->get_renderer();
+}
+
 std::pair<int,int> CVideo::current_resolution()
 {
 	return std::make_pair(getSurface()->w, getSurface()->h);

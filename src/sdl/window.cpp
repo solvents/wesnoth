@@ -18,6 +18,7 @@
 
 #include "sdl/exception.hpp"
 #include "sdl/image.hpp"
+#include "sdl/sdl_display_renderer.hpp"
 
 #include <SDL_render.h>
 
@@ -34,16 +35,22 @@ twindow::twindow(const std::string& title,
 	: window_(SDL_CreateWindow(title.c_str(), x, y, w, h, window_flags))
 	, pixel_format_(SDL_PIXELFORMAT_UNKNOWN)
 {
+
 	if(!window_) {
 		throw texception("Failed to create a SDL_Window object.", true);
 	}
 
-	if(!SDL_CreateRenderer(window_, -1, render_flags)) {
+	SDL_Renderer *renderer = SDL_CreateRenderer(window_, -1, render_flags);
+	if(!renderer) {
 		throw texception("Failed to create a SDL_Renderer object.", true);
 	}
 
+	boost::scoped_ptr<display_renderer> renderer_ptr(
+			new sdl::sdl_display_renderer(renderer));
+	renderer_.swap(renderer_ptr);
+
 	SDL_RendererInfo info;
-	if(SDL_GetRendererInfo(*this, &info) != 0) {
+	if(SDL_GetRendererInfo(renderer, &info) != 0) {
 		throw texception("Failed to retrieve the information of the renderer.",
 						 true);
 	}
@@ -97,16 +104,13 @@ void twindow::full_screen()
 
 void twindow::fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	SDL_SetRenderDrawColor(*this, r, g, b, a);
-	if(SDL_RenderClear(*this) != 0) {
-		throw texception("Failed to clear the SDL_Renderer object.",
-						 true);
-	}
+	SDL_Color color = { r, g, b, a };
+	renderer_->clear(color);
 }
 
 void twindow::render()
 {
-	SDL_RenderPresent(*this);
+	renderer_->commit();
 }
 
 void twindow::set_title(const std::string& title)
@@ -132,11 +136,6 @@ void twindow::set_minimum_size(int min_w, int min_h)
 twindow::operator SDL_Window*()
 {
 	return window_;
-}
-
-twindow::operator SDL_Renderer*()
-{
-	return SDL_GetRenderer(window_);
 }
 
 } // namespace sdl

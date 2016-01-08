@@ -451,6 +451,7 @@ set(wesnoth-sdl_SRC
 	sdl/utils.cpp
 	sdl/shader.cpp
 	sdl/keyboard.cpp
+	sdl/sdl_display_renderer.cpp
 	xBRZ/xbrz.cpp
 )
 

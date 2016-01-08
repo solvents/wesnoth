@@ -113,6 +113,10 @@ inline void sdl_blit(const surface& src, SDL_Rect* src_rect, surface& dst, SDL_R
 	SDL_BlitSurface(src, src_rect, dst, dst_rect);
 }
 
+inline void sdl_render(SDL_Texture *tex, SDL_Rect *src_rect, SDL_Renderer *renderer, SDL_Rect *dst_rect) {
+	SDL_RenderCopy(renderer, tex, src_rect, dst_rect);
+}
+
 inline void sdl_copy_portion(const surface& screen, SDL_Rect* screen_rect, surface& dst, SDL_Rect* dst_rect){
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_SetSurfaceBlendMode(screen, SDL_BLENDMODE_NONE);
